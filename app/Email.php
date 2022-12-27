@@ -14,12 +14,12 @@ class Email
     private $gmailPassword;
 
     // REMETENTE DO EMAIL
-    private $fromEmail = 'refudev.mail@gmail.com';
-    private $fromName  = 'Refu - Desenvolvedor';
+    private $fromEmail = '';
+    private $fromName  = '';
 
     // DESTINO DA REPOSTA DO EMAIL
-    private $replyEmail = 'refudev.mail@gmail.com';
-    private $replyName  = 'Refu - Desenvolvedor';
+    private $replyEmail = '';
+    private $replyName  = '';
 
     public function login($user, $pass)
     {
@@ -87,7 +87,7 @@ class Email
         if (!$mail->send()) {
             $onFailure($mail->ErrorInfo);
         } else {
-            $onSuccess();
+            $onSuccess($addresses);
         }
     }
 }
