@@ -15,9 +15,9 @@ $destinarios = ['', ''];
 // endereços que irão receber o email
 $titulo = 'EMAIL DE TESTE 2';
 // título  do email (aparece na caixa de entrada)
-$conteudo = file_get_contents('./content.html');
+$conteudo = '<h1>Título</h1><p>Conteúdo</p>';
 // body do email (conteúdo)
-$conteudoAlternativo = file_get_contents('./alt.txt');
+$conteudoAlternativo = 'Não foi possível carregar o documento HTML.';
 // conteúdo exibido para clientes de email sem suporte ao HTML (raro)
 $esconderDestinarios = false; 
 // mostrar quem são todos os destinários do email nas informações do email
