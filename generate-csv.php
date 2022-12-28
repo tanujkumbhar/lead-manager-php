@@ -1,54 +1,25 @@
 <?php
 
-$caminho = './emails/emails.csv';
-$delimitador = ',';
-$dados = [
-    [
-        'ID',
-        'Nome',
-        'Email'
-    ],
-    [
-        1,
-        'Maria',
-        'maria@example.com'
-    ],
-    [
-        2,
-        'João',
-        'joao@example.com'
-    ],
-    [
-        3,
-        'Joana',
-        '2023.joana@example.com'
-    ],
-    [
-        4,
-        'Maria',
-        'maria@example.com'
-    ],
-    [
-        5,
-        'João',
-        'joao@example.com'
-    ],
-    [
-        6,
-        'Joana',
-        '2023.joana@example.com'
-    ],
-];
+$filePath = './emails/emails.csv';
+$separator = ',';
+$sheetHeader = ['ID', 'Nome', 'Email'];
+$data = json_decode(file_get_contents('./emails/emails.json'));
 
-$csv = fopen($caminho, 'w');
+$csv = fopen($filePath, 'w');
+fputcsv($csv, $sheetHeader, $separator);
 
-foreach ($dados as $linha) {
-    fputcsv($csv, $linha, $delimitador);
+foreach ($data as $value) {
+    $row = [
+        $value->id,
+        $value->name,
+        $value->email
+    ];
+    fputcsv($csv, $row, $separator);
 }
 
 fclose($csv);
 
-header('Content-Disposition: attachment; filename="' . basename($caminho) . '";');
-readfile($caminho);
+header('Content-Disposition: attachment; filename="' . basename($filePath) . '";');
+readfile($filePath);
 
 exit;
