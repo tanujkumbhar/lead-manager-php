@@ -63,5 +63,20 @@
         "id": 13,
         "name": "Novo cadastro",
         "email": "serginho.semnome@example.com"
+    },
+    {
+        "id": 14,
+        "name": "Renan",
+        "email": "refused@gmail.com"
+    },
+    {
+        "id": 15,
+        "name": "Renan",
+        "email": "refusado@gmail.com"
+    },
+    {
+        "id": 16,
+        "name": "Teste",
+        "email": "umteste@gmail.com"
     }
 ]

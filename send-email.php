@@ -1,6 +1,7 @@
 <?php
 
 require_once './app/Email.php';
+$cadastros = json_decode(file_get_contents('./emails/emails.json'));
 
 $email = new Email();
 
@@ -11,17 +12,20 @@ $usuario = '';
 // login da conta no Gmail
 $senha = '';
 // senha da conta no Gmail
-$destinarios = ['', ''];
+$destinarios = [];
+foreach ($cadastros as $cadastro) {
+    array_push($destinarios, $cadastro->email);
+};
 // endereços que irão receber o email
-$titulo = 'EMAIL DE TESTE 2';
+$titulo = $_POST['title'];
 // título  do email (aparece na caixa de entrada)
-$conteudo = '<h1>Título</h1><p>Conteúdo</p>';
+$conteudo = $_POST['body'];
 // body do email (conteúdo)
-$conteudoAlternativo = 'Não foi possível carregar o documento HTML.';
+$conteudoAlternativo = $_POST['altBody'];
 // conteúdo exibido para clientes de email sem suporte ao HTML (raro)
-$esconderDestinarios = false; 
+$esconderDestinarios = $_POST['hideAdds']; 
 // mostrar quem são todos os destinários do email nas informações do email
-$anexos = null;
+$anexos = $_POST['attachments'];
 // arquivos/documentos a serem anexados ao email
 $sucesso = function ($adds) {
     echo "Email enviado com sucesso: <b>" . implode(', ', $adds) . "</b>";
@@ -34,13 +38,13 @@ $falha = function ($err) {
 
 // EXTRA (opcionais)
 
-$autor = 'avisos@val.com';
+$autor = $_POST['fromEmail'];
 // endereço que será exibido como autor do email
-$nomeAutor = 'Victor - Val';
+$nomeAutor = $_POST['fromName'];
 // nome que será exibido como autor do email
-$responda = 'suporte@val.com';
+$responda = $_POST['replyEmail'];
 // destinário da resposta (endereço que estará na opção 'responder' do email)
-$nomeResponda = 'Suporte - Val';
+$nomeResponda = $_POST['replyName'];
 // nome do destinário da resposta do email ^
 // *********************
 
