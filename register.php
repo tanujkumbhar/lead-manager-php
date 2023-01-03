@@ -3,19 +3,10 @@
 $jsonData = file_get_contents('./emails/emails.json');
 $arrayData = json_decode($jsonData);
 
-$_POST['newName'];
-$_POST['newEmail'];
-
 addRegister($_POST['newName'], $_POST['newEmail']);
-
 echo $_POST['newName'] . " cadastrado com sucesso no email " . $_POST['newEmail'];
 
-echo "<pre>";
-print_r($arrayData);
-echo "</pre>";
-
 file_put_contents('./emails/emails.json', toJson($arrayData));
-
 
 function addRegister($nome, $email) {
     $newLine = new stdClass;
