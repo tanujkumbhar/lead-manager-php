@@ -5,11 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lead Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js" rel="stylesheet" crossorigin="anonymous" defer>
 </head>
-<body>
-    <a href="./generate-csv.php">Baixar arquivo CSV com todos os cadastros</a>
-
-    <hr>
+<body class="container">
 
     <form action="./register.php" method="post">
         <h2>Registrar novo cadastro</h2>
@@ -65,5 +64,11 @@ foreach ($cadastros as $cadastro) {
         <input type="text" placeholder="Nome Sobrenome" name="replyName" id="">
         <input type="submit" value="Enviar email">
     </form>
+
+    <div class="p-3 mx-auto col-3 border border-secondary rounded my-4">
+        <p class="text-center text-dark">Baixar cadastros</p>
+        <a href="./generate-csv.php" class="text-center btn btn-primary">CSV</a>
+        <a href="./emails/emails.json" class="text-center btn btn-primary" download="">JSON</a>
+    </div>
 </body>
 </html>
