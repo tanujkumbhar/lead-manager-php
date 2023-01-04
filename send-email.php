@@ -5,6 +5,11 @@ $cadastros = json_decode(file_get_contents('./emails/emails.json'));
 
 $email = new Email();
 
+echo '<pre>';
+print_r($_POST);
+print_r($_FILES);
+echo '</pre>';
+
 // *********************
 // DADOS
 
@@ -17,15 +22,15 @@ foreach ($cadastros as $cadastro) {
     array_push($destinarios, $cadastro->email);
 };
 // endereços que irão receber o email
-$titulo = $_POST['title'];
+$titulo = @$_POST['title'];
 // título  do email (aparece na caixa de entrada)
-$conteudo = $_POST['body'];
+$conteudo = @$_POST['body'];
 // body do email (conteúdo)
-$conteudoAlternativo = $_POST['altBody'];
+$conteudoAlternativo = @$_POST['altBody'];
 // conteúdo exibido para clientes de email sem suporte ao HTML (raro)
-$esconderDestinarios = $_POST['hideAdds']; 
+$esconderDestinarios = @$_POST['showAddresses'] ? true : false; 
 // mostrar quem são todos os destinários do email nas informações do email
-$anexos = $_POST['attachments'];
+$anexos = @$_FILES['attachments']['tmp_name'];
 // arquivos/documentos a serem anexados ao email
 $sucesso = function ($adds) {
     echo "Email enviado com sucesso: <b>" . implode(', ', $adds) . "</b>";

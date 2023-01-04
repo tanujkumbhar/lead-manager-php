@@ -49,12 +49,12 @@
     </div>
     <hr>
     <div class="row">
-        <form class="form-control p-3 my-4" action="./send-email.php" method="post">
-            <h2 class="fs-2 p-3">Enviar email</h2>
+        <form class="form-control p-3 w-auto mx-auto my-4 border-0" action="./send-email.php" method="post" enctype="multipart/form-data">
+            <h2 class="fs-2 mb-5">Enviar email</h2>
 
-            <div class="mb-4">
+            <div class="mb-4 card shadow-sm p-3">
                 <label for="title" class="form-label">Destinários</label>
-                <ul class="list-group">
+                <ul class="list-group" title="Coletando emails no arquivo emails.json">
                     <?php
 
                     $jsonData = file_get_contents('./emails/emails.json');
@@ -69,55 +69,66 @@
                 <div class="form-text">Todos os endereços que receberam o email</div>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 p-3 card shadow-sm">
                 <label for="title" class="form-label">Título do email</label>
-                <input name="title" id="title" type="text" class="form-control">
+                <input name="title" id="title" type="text" class="form-control" placeholder="Confira agora a sua retrospectiva de 2022">
                 <div class="form-text">O título que será exibido no topo do email e na caixa de entrada do receptor</div>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 p-3 card shadow-sm">
                 <label for="body" class="form-label">Corpo do email</label>
                 <code>
-                    <textarea class="w-100 form-control" name="body" id="body"></textarea>
+                    <textarea class="w-100 form-control" name="body" id="body" placeholder="<h1>Essa é a sua retrospectiva de 2022</h1>
+<p>Essas foram as coisas que você fez em 2022</p>"></textarea>
                 </code>
                 <div class="form-text">O conteúdo que estará de fato no email (em HTML)</div>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 p-3 card shadow-sm">
                 <label for="altBody" class="form-label">Conteúdo alternativo</label>
-                <textarea class="w-100 form-control" name="altBody" id="altBody"></textarea>
+                <textarea class="w-100 form-control" name="altBody" id="altBody">O seu cliente de email não suporta o documento.</textarea>
                 <div class="form-text">Um texto para os clientes de email que não suportam HTML</div>
             </div>
 
 
-            <div class="mb-4 form-check">
-                <input class="form-check-input" type="checkbox" value="hideAdds" id="hideAdds">
-                <label class="form-check-label" for="hideAdds">
-                    Esconder destinários
-                    <span class="form-text">(Se será possível que cada cliente veja todos que também receberam o email)</span>
-                </label>
+            <div class="mb-4 p-3 card shadow-sm">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="showAddresses" id="showAddresses">
+                    <label class="form-check-label" for="showAddresses">
+                        Destinários visíveis
+                    </label>
+                </div>
+                <div class="form-text">Se será possível que cada receptor veja todos os endereçõs que também receberam o email</div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4 p-3 card shadow-sm">
                 <label for="attachments" class="form-label">Anexos</label>
-                <input class="form-control" type="file" name="attachments" id="attachments">
-                <div class="form-text">Arquivos que serão enviados junto ao emailL</div>
+                <input class="form-control" type="file" name="attachments" id="attachments" multiple>
+                <div class="form-text">Arquivos que serão enviados junto ao email</div>
             </div>
 
-            <p>Mostrar como autor</p>
-            <input type="email" placeholder="email@example.com" name="fromEmail" id="">
-            <input type="text" placeholder="Nome Sobrenome" name="fromName" id="">
-
-            <div class="input-group">
-                <span class="input-group-text">Mostrar como autor</span>
-                <input type="text" class="form-control" placeholder="Maria Clara">
-                <input type="email" class="form-control" placeholder="contato.mariaclara@example.com">
+            <div class="mb-4 p-3 card shadow-sm">
+                <div class="input-group">
+                    <span class="input-group-text">Autor</span>
+                    <input type="text" class="form-control" name="fromName" placeholder="Maria Clara">
+                    <input type="email" class="form-control" name="fromEmail" placeholder="contato.mariaclara@example.com">
+                </div>
+                <div class="form-text">Nome e email que aparecerá como autor do email</div>
             </div>
 
-            <p>Responder email à</p>
-            <input type="email" placeholder="email@example.com" name="replyEmail" id="">
-            <input type="text" placeholder="Nome Sobrenome" name="replyName" id="test">
-            <input type="submit" value="Enviar email">
+            <div class="mb-4 p-3 card shadow-sm">
+                <div class="input-group">
+                    <span class="input-group-text">Responder</span>
+                    <input type="text" class="form-control" name="replyName" placeholder="Maria Clara">
+                    <input type="email" class="form-control" name="replyEmail" placeholder="contato.mariaclara@example.com">
+                </div>
+                <div class="form-text">Nome e email que aparecerá quando o receptor selecionar opção "Responder Email"</div>
+            </div>
+            
+            <div class="col-3 offset-9 mt-4 pt-2">
+                <button type="submit" class="btn btn-primary w-100">Enviar Email</button>
+            </div>
+
         </form>
     </div>
 </body>
