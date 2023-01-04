@@ -29,51 +29,90 @@
     </div>
     <hr>
     <div class="row">
-        <div class="p-4 my-4 w-auto mx-auto form-control shadow-sm">
-            <h2 class="fs-3 mb-4 text-center w-100">Baixar cadastros</h2>
-            <a href="./generate-csv.php" class="btn btn-outline-success w-100 mb-2">CSV</a>
-            <a href="./emails/emails.json" class="btn btn-outline-success w-100" download="">JSON</a>
+        <div class="my-4 w-auto mx-auto card shadow-sm p-0" style="min-width: min(280px, 90vw);">
+            <h2 class="fs-3 text-center card-header">Cadastros</h2>
+            <ul class="list-group list-group-flush">
+                <?php
+
+                $jsonData = file_get_contents('./emails/emails.json');
+                $cadastros = json_decode($jsonData);
+
+                foreach ($cadastros as $cadastro) {
+                    echo "<li class='list-group-item'>$cadastro->email</li>";
+                };
+
+                ?>
+            </ul>
+            <a href="./generate-csv.php" class="btn btn-outline-success mx-3 mt-4">Baixar CSV</a>
+            <a href="./emails/emails.json" class="btn btn-outline-success mx-3 mt-2 mb-4" download="">Baixar JSON</a>
         </div>
     </div>
     <hr>
     <div class="row">
-        <form class="form-control" action="./send-email.php" method="post">
-            <h2>Enviar email</h2>
-            <p>Destinários</p>
-            <?php
+        <form class="form-control p-3 my-4" action="./send-email.php" method="post">
+            <h2 class="fs-2 p-3">Enviar email</h2>
 
-            $jsonData = file_get_contents('./emails/emails.json');
-            $cadastros = json_decode($jsonData);
+            <div class="mb-4">
+                <label for="title" class="form-label">Destinários</label>
+                <ul class="list-group">
+                    <?php
 
-            foreach ($cadastros as $cadastro) {
-                echo $cadastro->email;
-                echo "<br>";
-            };
+                    $jsonData = file_get_contents('./emails/emails.json');
+                    $cadastros = json_decode($jsonData);
 
-            ?>
+                    foreach ($cadastros as $cadastro) {
+                        echo "<li class='list-group-item'>$cadastro->email</li>";
+                    };
 
-            <p>Título</p>
-            <input type="text" name="title" id=""><br>
-            <p>Corpo</p>
-            <textarea name="body" id="" cols="30" rows="10">
+                    ?>
+                </ul>
+                <div class="form-text">Todos os endereços que receberam o email</div>
+            </div>
 
-            </textarea>
-            <p>Conteúdo alternativo</p>
-            <textarea name="altBody" id="" cols="30" rows="10">
+            <div class="mb-4">
+                <label for="title" class="form-label">Título do email</label>
+                <input name="title" id="title" type="text" class="form-control">
+                <div class="form-text">O título que será exibido no topo do email e na caixa de entrada do receptor</div>
+            </div>
 
-            </textarea>
-            <p>Esconder destinários</p>
-            <label for="hideAddress">Sim</label>
-            <input type="radio" name="hideAdds" value="true" checked id="hideAddress">
-            <label for="dontHideAddress">Não</label>
-            <input type="radio" name="hideAdds" value="false" id="dontHideAddress">
+            <div class="mb-4">
+                <label for="body" class="form-label">Corpo do email</label>
+                <code>
+                    <textarea class="w-100 form-control" name="body" id="body"></textarea>
+                </code>
+                <div class="form-text">O conteúdo que estará de fato no email (em HTML)</div>
+            </div>
 
-            <p>Anexos</p>
-            <input type="file" name="attachments" id="">
+            <div class="mb-4">
+                <label for="altBody" class="form-label">Conteúdo alternativo</label>
+                <textarea class="w-100 form-control" name="altBody" id="altBody"></textarea>
+                <div class="form-text">Um texto para os clientes de email que não suportam HTML</div>
+            </div>
+
+
+            <div class="mb-4 form-check">
+                <input class="form-check-input" type="checkbox" value="hideAdds" id="hideAdds">
+                <label class="form-check-label" for="hideAdds">
+                    Esconder destinários
+                    <span class="form-text">(Se será possível que cada cliente veja todos que também receberam o email)</span>
+                </label>
+            </div>
+
+            <div class="mb-3">
+                <label for="attachments" class="form-label">Anexos</label>
+                <input class="form-control" type="file" name="attachments" id="attachments">
+                <div class="form-text">Arquivos que serão enviados junto ao emailL</div>
+            </div>
 
             <p>Mostrar como autor</p>
             <input type="email" placeholder="email@example.com" name="fromEmail" id="">
             <input type="text" placeholder="Nome Sobrenome" name="fromName" id="">
+
+            <div class="input-group">
+                <span class="input-group-text">Mostrar como autor</span>
+                <input type="text" class="form-control" placeholder="Maria Clara">
+                <input type="email" class="form-control" placeholder="contato.mariaclara@example.com">
+            </div>
 
             <p>Responder email à</p>
             <input type="email" placeholder="email@example.com" name="replyEmail" id="">

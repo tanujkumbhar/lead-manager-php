@@ -3,5 +3,15 @@
         "id": 1,
         "name": "Renan",
         "email": "refusado@gmail.com"
+    },
+    {
+        "id": 2,
+        "name": "Rogério",
+        "email": "regerio2023@gmail.com"
+    },
+    {
+        "id": 3,
+        "name": "Rogério",
+        "email": "rogerinho.gamer@gmail.com"
     }
 ]
