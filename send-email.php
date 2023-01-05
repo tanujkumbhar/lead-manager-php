@@ -30,7 +30,7 @@ $conteudoAlternativo = @$_POST['altBody'];
 // conteúdo exibido para clientes de email sem suporte ao HTML (raro)
 $esconderDestinarios = @$_POST['showAddresses'] ? true : false; 
 // mostrar quem são todos os destinários do email nas informações do email
-$anexos = @$_FILES['attachments']['tmp_name'];
+$anexos = @$_FILES['attachments'];
 // arquivos/documentos a serem anexados ao email
 $sucesso = function ($adds) {
     echo "Email enviado com sucesso: <b>" . implode(', ', $adds) . "</b>";

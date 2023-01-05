@@ -45,7 +45,7 @@ class Email
         $body,
         $alt = '',
         $hideAddresses = true,
-        $attachments = null,
+        $files = null,
         $onSuccess,
         $onFailure
     ) {
@@ -78,10 +78,10 @@ class Email
         $mail->msgHTML($body);
         $mail->AltBody = $alt;
 
-        $attachments = is_array($attachments) ? $attachments : [$attachments];
-        foreach ($attachments as $attachment) {
-            $mail->addAttachment($attachment);
-        }
+        $finalTempPath = sys_get_temp_dir() . $files['name'];
+        move_uploaded_file($files['tmp_name'], $finalTempPath);
+
+        $mail->addAttachment($finalTempPath, "Nome do arquivo");
 
         // ENVIO
         if (!$mail->send()) {
