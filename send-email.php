@@ -1,89 +1,82 @@
 <?php
 
 require_once './app/Email.php';
-$cadastros = json_decode(file_get_contents('./emails/emails.json'));
 
-$email = new Email();
+// *********************
 
 echo '<pre>';
 print_r($_POST);
-print_r($_FILES);
 echo '</pre>';
 
-// *********************
-// DADOS
+// LOGIN
+$usuario    = '';
+$senha      = '';
 
-$usuario = '';
-// login da conta no Gmail
-$senha = '';
-// senha da conta no Gmail
-$destinarios = [];
+// ENDEREÇOS
+$destinos   = [];
+
+$cadastros  = json_decode(file_get_contents('./emails/emails.json'));
 foreach ($cadastros as $cadastro) {
-    array_push($destinarios, $cadastro->email);
+    array_push($destinos, $cadastro->email);
 };
-// endereços que irão receber o email
-$titulo = @$_POST['title'];
-// título  do email (aparece na caixa de entrada)
-$conteudo = @$_POST['body'];
-// body do email (conteúdo)
-$conteudoAlternativo = @$_POST['altBody'];
-// conteúdo exibido para clientes de email sem suporte ao HTML (raro)
-$esconderDestinarios = @$_POST['showAddresses'] ? true : false; 
-// mostrar quem são todos os destinários do email nas informações do email
-$anexos = @$_FILES['attachments'];
-// arquivos/documentos a serem anexados ao email
-$sucesso = function ($adds) {
+
+// CONTEÚDO
+$titulo     = @$_POST['title'];
+$corpo      = @$_POST['body'];
+$corpoAlt   = @$_POST['altBody'];
+$anexos     = @$_FILES['attachments'];
+
+// CONFIGURAÇÕES
+$alvosVisiveis  = @$_POST['showAddresses'] ? true : false; 
+$autorEmail     = @$_POST['fromEmail'];
+$autorNome      = @$_POST['fromName'];
+$respondaEmail  = @$_POST['replyEmail'];
+$respondaNome   = @$_POST['replyName'];
+
+// DEPOIS DE ENVIAR
+$emSucesso  = function ($adds) {
     echo "Email enviado com sucesso: <b>" . implode(', ', $adds) . "</b>";
 };
-// função que será executada quando o email for enviado com sucesso
-$falha = function ($err) {
+$emFalha    = function ($err) {
     echo "Não foi possível concluir esta ação: <b>" . $err . "</b>";
 };
-// função que será executada em caso de falhas no envio do email
 
-// EXTRA (opcionais)
-
-$autor = $_POST['fromEmail'];
-// endereço que será exibido como autor do email
-$nomeAutor = $_POST['fromName'];
-// nome que será exibido como autor do email
-$responda = $_POST['replyEmail'];
-// destinário da resposta (endereço que estará na opção 'responder' do email)
-$nomeResponda = $_POST['replyName'];
-// nome do destinário da resposta do email ^
 // *********************
 
+$email = new Email;
+
 $email->login($usuario, $senha);
-$email->setFrom($autor, $nomeAutor);
-$email->setReply($responda, $nomeResponda);
+$email->setFrom($autorEmail, $autorNome);
+$email->setReply($respondaEmail, $respondaNome);
 $email->send(
-    $destinarios,
+    $destinos,
     $titulo,
-    $conteudo,
-    $conteudoAlternativo,
-    $esconderDestinarios,
+    $corpo,
+    $corpoAlt,
+    $alvosVisiveis,
     $anexos,
-    $sucesso,
-    $falha
+    $emSucesso,
+    $emFalha
 );
 
 
+// Com um laço é possível enviar emails individuais
+// Dessa forma é possível criar configurações dinâmicas, para cada destinário
+// Neste exemplo, apenas o título e o conteúdo são dinâmicos
+// Porém todas as configurações anteriores podem ser feitas dentro do loop
 
-// É possível enviar email individuais e com o conteúdo dinâmico criando um laço
-// no array dos destinários e executando o método de envio para cada endereço ->
-
-// foreach ($destinarios as $add) {
-//     $titulo = "Aviso para $add";
-//     $conteudo = "Olá, $add, gostaria de avisar que este é um email automático.";
+// foreach ($destinos as $add) {
+//     $titulo     = "Aviso para $add";
+//     $body       = "Olá, $add, este é um email individual.";
 
 //     $email->send(
 //         $add,
 //         $titulo,
-//         $conteudo,
+//         $body,
 //         $conteudoAlternativo,
-//         $esconderDestinarios,
+//         $alvosVisiveis,
 //         $anexos,
-//         $sucesso,
-//         $falha
+//         $emSucesso,
+//         $emFalha
 //     );
 // }

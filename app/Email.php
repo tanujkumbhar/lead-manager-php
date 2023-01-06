@@ -14,12 +14,12 @@ class Email
     private $gmailPassword;
 
     // REMETENTE DO EMAIL
-    private $fromEmail = '';
-    private $fromName  = '';
+    private $fromEmail;
+    private $fromName;
 
     // DESTINO DA REPOSTA DO EMAIL
-    private $replyEmail = '';
-    private $replyName  = '';
+    private $replyEmail;
+    private $replyName;
 
     public function login($user, $pass)
     {
@@ -27,13 +27,13 @@ class Email
         $this->gmailPassword = $pass;
     }
 
-    public function setFrom($email, $name = '')
+    public function setFrom($email, $name)
     {
         $this->fromEmail = $email;
         $this->fromName  = $name;
     }
 
-    public function setReply($email, $name = '')
+    public function setReply($email, $name)
     {
         $this->replyEmail = $email;
         $this->replyName  = $name;
@@ -45,13 +45,15 @@ class Email
         $body,
         $alt = '',
         $hideAddresses = true,
-        $files = null,
+        $attachments = null,
         $onSuccess,
         $onFailure
     ) {
         $mail = new PHPMailer;
 
-        // CONFIGURAÇÕES
+        // CONFIGURAÇÕES DO SERVIDOR
+        $mail->Username = $this->gmailUsername;
+        $mail->Password = $this->gmailPassword;
         $mail->isSMTP();
         $mail->SMTPDebug = 0;
         $mail->Host = "smtp.gmail.com";
@@ -61,27 +63,17 @@ class Email
         $mail->SMTPAuth = true;
         $mail->setLanguage('pt_br');
 
-        // INFORMAÇÕES
-        $mail->Username = $this->gmailUsername;
-        $mail->Password = $this->gmailPassword;
-        $mail->setFrom($this->fromEmail, $this->fromName);
-        $mail->addReplyTo($this->replyEmail, $this->replyName);
+        // DESTINÁRIOS
+        $this->processAdresses($mail, $addresses, $hideAddresses);
+        $this->precessFrom($mail);
+        $this->precessReply($mail);
 
-        // MENSAGEM
-        $addresses = is_array($addresses) ? $addresses : [$addresses];
-        foreach ($addresses as $address) {
-            if ($hideAddresses) $mail->addBCC($address);
-            $mail->addAddress($address);
-        }
+        // CONTEÚDO
 
         $mail->Subject = $title;
         $mail->msgHTML($body);
         $mail->AltBody = $alt;
-
-        $finalTempPath = sys_get_temp_dir() . $files['name'];
-        move_uploaded_file($files['tmp_name'], $finalTempPath);
-
-        $mail->addAttachment($finalTempPath, "Nome do arquivo");
+        $this->processAttachment($mail, $attachments);
 
         // ENVIO
         if (!$mail->send()) {
@@ -89,5 +81,55 @@ class Email
         } else {
             $onSuccess($addresses);
         }
+    }
+
+    private function processAdresses($mailerInstance, $addresses, $hideAddresses = true)
+    {
+        $addresses = is_array($addresses) ? $addresses : [$addresses];
+        foreach ($addresses as $address) {
+            if ($hideAddresses) $mailerInstance->addBCC($address);
+            $mailerInstance->addAddress($address);
+        }
+    }
+
+    private function precessFrom($mailerInstance)
+    {
+        if (empty($this->fromEmail)) {
+            return;
+        } else {
+            if (empty($this->fromName)) {
+                $mailerInstance->setFrom($this->fromEmail);
+            } else {
+                $mailerInstance->setFrom($this->fromEmail, $this->fromName);
+            }
+        }
+    }
+
+    private function precessReply($mailerInstance)
+    {
+        if (empty($this->replyEmail)) {
+            return;
+        } else {
+            if (empty($this->replyName)) {
+                $mailerInstance->addReplyTo($this->replyEmail);
+            } else {
+                $mailerInstance->addReplyTo($this->replyEmail, $this->replyName);
+            }
+        }
+    }
+
+    private function processAttachment($mailerInstance, $file, $isGlobal = true)
+    {
+        if ($isGlobal) {
+            $fileName = $file['name'];
+        } else {
+            $fileName = $file;
+        }
+
+        $ext = PHPMailer::mb_pathinfo($fileName, PATHINFO_EXTENSION);
+        $finalTempPath = tempnam(sys_get_temp_dir(), hash('sha256', $file['name'])) . '.' . $ext;
+        move_uploaded_file($file['tmp_name'], $finalTempPath);
+
+        $mailerInstance->addAttachment($finalTempPath, $fileName);
     }
 }
