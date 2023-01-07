@@ -1,24 +1,39 @@
 <?php
 
-$jsonData = file_get_contents('./emails/emails.json');
-$arrayData = json_decode($jsonData);
+$emailsPath = './emails/emails.json';
 
-addRegister($_POST['newName'], $_POST['newEmail']);
-echo $_POST['newName'] . " cadastrado com sucesso no email " . $_POST['newEmail'];
+$json       = @file_get_contents($emailsPath);
+$jsonData   = $json ? $json : "[]";
+$arrayData  = json_decode($jsonData);
 
-file_put_contents('./emails/emails.json', toJson($arrayData));
+$name   = $_POST['newName'];
+$email  = $_POST['newEmail'];
+
+if (addRegister($name, $email)) {
+    echo "<b>{$_POST['newName']}</b> cadastrado com sucesso no email <b>{$_POST['newEmail']}</b>";
+} else {
+    echo "Não foi possível cadastrar.";
+}
 
 function addRegister($nome, $email) {
+    global $arrayData;
+    global $emailsPath;
+
     $newLine = new stdClass;
 
-    global $arrayData;
-    $registersNo = count($arrayData);
-
-    $newLine->id = ++$registersNo;
-    $newLine->name = $nome;
+    $newLine->id    = count($arrayData) + 1;
+    $newLine->name  = $nome;
     $newLine->email = $email;
 
-    array_push($arrayData, $newLine);
+    if (!array_push($arrayData, $newLine)) {
+        return false;
+    }
+
+    if (!file_put_contents($emailsPath, toJson($arrayData))) {
+        return false;
+    }
+
+    return true;
 }
 
 function toJson($data) {

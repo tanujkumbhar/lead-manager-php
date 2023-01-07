@@ -4,21 +4,12 @@ require_once './app/Email.php';
 
 // *********************
 
-echo '<pre>';
-print_r($_POST);
-echo '</pre>';
-
 // LOGIN
 $usuario    = '';
 $senha      = '';
 
 // ENDEREÇOS
-$destinos   = [];
-
-$cadastros  = json_decode(file_get_contents('./emails/emails.json'));
-foreach ($cadastros as $cadastro) {
-    array_push($destinos, $cadastro->email);
-};
+$destinos   = coletarEmailsDoJson('./emails/emails.json');
 
 // CONTEÚDO
 $titulo     = @$_POST['title'];
@@ -80,3 +71,16 @@ $email->send(
 //         $emFalha
 //     );
 // }
+
+
+function coletarEmailsDoJson($jsonPath) {
+    $emails         = [];
+    $cadastrosJson  = file_get_contents($jsonPath);
+    $cadastros      = json_decode($cadastrosJson);
+
+    foreach ($cadastros as $cadastro) {
+        array_push($emails, $cadastro->email);
+    };
+
+    return $emails;
+}

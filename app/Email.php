@@ -1,7 +1,7 @@
 <?php
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 
 require './PHPMailer/src/Exception.php';
 require './PHPMailer/src/PHPMailer.php';
@@ -55,13 +55,13 @@ class Email
         $mail->Username = $this->gmailUsername;
         $mail->Password = $this->gmailPassword;
         $mail->isSMTP();
-        $mail->SMTPDebug = 0;
-        $mail->Host = "smtp.gmail.com";
-        $mail->Port = 587;
-        $mail->CharSet = 'UTF-8';
-        $mail->SMTPSecure = 'tls';
-        $mail->SMTPAuth = true;
         $mail->setLanguage('pt_br');
+        $mail->SMTPDebug    = SMTP::DEBUG_OFF;
+        $mail->Host         = "smtp.gmail.com";
+        $mail->Port         = 587;
+        $mail->CharSet      = 'UTF-8';
+        $mail->SMTPSecure   = 'tls';
+        $mail->SMTPAuth     = true;
 
         // DESTINÁRIOS
         $this->processAdresses($mail, $addresses, $hideAddresses);
@@ -76,10 +76,10 @@ class Email
         $this->processAttachment($mail, $attachments);
 
         // ENVIO
-        if (!$mail->send()) {
-            $onFailure($mail->ErrorInfo);
-        } else {
+        if ($mail->send()) {
             $onSuccess($addresses);
+        } else {
+            $onFailure($mail->ErrorInfo);
         }
     }
 
