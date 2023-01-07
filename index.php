@@ -34,36 +34,38 @@
             <ul class="list-group list-group-flush">
                 <?php
 
-                $jsonData = file_get_contents('./emails/emails.json');
-                $cadastros = json_decode($jsonData);
+                $jsonData   = @file_get_contents('./emails/emails.json');
+                $cadastros  = json_decode($jsonData);
 
-                foreach ($cadastros as $cadastro) {
-                    echo "<li class='list-group-item'>$cadastro->email</li>";
-                };
+                if ($cadastros)
+                    foreach ($cadastros as $cadastro) {
+                        echo "<li class='list-group-item'>$cadastro->email</li>";
+                    };
 
                 ?>
             </ul>
-            <a href="./generate-csv.php" class="btn btn-outline-success mx-3 mt-4">Baixar CSV</a>
+            <a href="./emails/emails.csv" class="btn btn-outline-success mx-3 mt-4" download="">Baixar CSV</a>
             <a href="./emails/emails.json" class="btn btn-outline-success mx-3 mt-2 mb-4" download="">Baixar JSON</a>
         </div>
     </div>
     <hr>
     <div class="row">
-        <form class="form-control w-auto mx-auto my-4 p-4 card shadow-sm" action="./send-email.php" method="post" enctype="multipart/form-data">
+        <form class="form-control w-auto mx-auto my-4 p-4 card shadow-sm" action="./send-email.php" method="post" enctype="multipart/form-data" target="_blank">
             <h2 class="fs-2 mb-5">Enviar email</h2>
 
             <div class="mb-5">
                 <label for="title" class="form-label fs-4">Destinatários</label>
                 <ul class="list-group" title="Coletando emails no arquivo emails.json">
                     <?php
-
-                    $jsonData = file_get_contents('./emails/emails.json');
-                    $cadastros = json_decode($jsonData);
-
-                    foreach ($cadastros as $cadastro) {
-                        echo "<li class='list-group-item'>$cadastro->email</li>";
-                    };
-
+    
+                    $jsonData   = @file_get_contents('./emails/emails.json');
+                    $cadastros  = json_decode($jsonData);
+    
+                    if ($cadastros)
+                        foreach ($cadastros as $cadastro) {
+                            echo "<li class='list-group-item'>$cadastro->email</li>";
+                        };
+    
                     ?>
                 </ul>
                 <div class="form-text">Todos os endereços que receberam o email</div>
@@ -93,17 +95,17 @@
 
             <div class="mb-5">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="showAddresses" id="showAddresses">
-                    <label class="form-check-label" for="showAddresses">
-                        Destinatários visíveis
+                    <input class="form-check-input" type="checkbox" name="hideAddresses" id="hideAddresses" checked>
+                    <label class="form-check-label" for="hideAddresses">
+                        Esconder destinatários
                     </label>
                 </div>
-                <div class="form-text">Se será possível que cada receptor veja todos os endereçõs que também receberam o email</div>
+                <div class="form-text">Não permitir que todos os outros destinatários sejam revelados a cada receptor</div>
             </div>
 
             <div class="mb-5">
                 <label for="attachments" class="form-label fs-4">Anexos</label>
-                <input class="form-control" type="file" name="attachments" id="attachments" multiple>
+                <input class="form-control" type="file" name="attachments[]" id="attachments" multiple>
                 <div class="form-text">Arquivos que serão enviados junto ao email</div>
             </div>
 

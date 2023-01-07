@@ -3,9 +3,9 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
-require './PHPMailer/src/Exception.php';
-require './PHPMailer/src/PHPMailer.php';
-require './PHPMailer/src/SMTP.php';
+require './app/PHPMailer/src/Exception.php';
+require './app/PHPMailer/src/PHPMailer.php';
+require './app/PHPMailer/src/SMTP.php';
 
 class Email
 {
@@ -85,7 +85,7 @@ class Email
 
     private function processAdresses($mailerInstance, $addresses, $hideAddresses = true)
     {
-        $addresses = is_array($addresses) ? $addresses : [$addresses];
+        $addresses = $this->asArray($addresses);
         foreach ($addresses as $address) {
             if ($hideAddresses) $mailerInstance->addBCC($address);
             $mailerInstance->addAddress($address);
@@ -121,15 +121,26 @@ class Email
     private function processAttachment($mailerInstance, $file, $isGlobal = true)
     {
         if ($isGlobal) {
-            $fileName = $file['name'];
+            $allFiles       = $this->asArray($file['name']);
+            $allTempFiles   = $this->asArray($file['tmp_name']);
         } else {
-            $fileName = $file;
+            $allFiles       = $this->asArray($file);
         }
 
-        $ext = PHPMailer::mb_pathinfo($fileName, PATHINFO_EXTENSION);
-        $finalTempPath = tempnam(sys_get_temp_dir(), hash('sha256', $file['name'])) . '.' . $ext;
-        move_uploaded_file($file['tmp_name'], $finalTempPath);
+        for ($i = 0; $i < count($allFiles); $i++) {
+            $extension      = PHPMailer::mb_pathinfo($allFiles[$i], PATHINFO_EXTENSION);
+            $hashValue      = hash('sha256', $allFiles[$i]);
+            $finalTempPath  = tempnam(sys_get_temp_dir(), $hashValue) . ".$extension";
 
-        $mailerInstance->addAttachment($finalTempPath, $fileName);
+            move_uploaded_file($allTempFiles[$i], $finalTempPath);
+            
+            $mailerInstance->addAttachment($finalTempPath, $allFiles[$i]);
+        }
+    }
+
+    private function asArray($variable)
+    {
+        $array = is_array($variable) ? $variable : [$variable];
+        return $array;
     }
 }

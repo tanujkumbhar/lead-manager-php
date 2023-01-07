@@ -9,7 +9,7 @@ $usuario    = '';
 $senha      = '';
 
 // ENDEREÇOS
-$destinos   = coletarEmailsDoJson('./emails/emails.json');
+$destinos   = coletarEmailsJson('./emails/emails.json');
 
 // CONTEÚDO
 $titulo     = @$_POST['title'];
@@ -18,7 +18,7 @@ $corpoAlt   = @$_POST['altBody'];
 $anexos     = @$_FILES['attachments'];
 
 // CONFIGURAÇÕES
-$alvosVisiveis  = @$_POST['showAddresses'] ? true : false; 
+$esconderAlvos  = @$_POST['hideAddresses'] ? true : false; 
 $autorEmail     = @$_POST['fromEmail'];
 $autorNome      = @$_POST['fromName'];
 $respondaEmail  = @$_POST['replyEmail'];
@@ -27,6 +27,7 @@ $respondaNome   = @$_POST['replyName'];
 // DEPOIS DE ENVIAR
 $emSucesso  = function ($adds) {
     echo "Email enviado com sucesso: <b>" . implode(', ', $adds) . "</b>";
+    echo "<br><a href='./index.php'>Voltar</a>";
 };
 $emFalha    = function ($err) {
     echo "Não foi possível concluir esta ação: <b>" . $err . "</b>";
@@ -44,7 +45,7 @@ $email->send(
     $titulo,
     $corpo,
     $corpoAlt,
-    $alvosVisiveis,
+    $esconderAlvos,
     $anexos,
     $emSucesso,
     $emFalha
@@ -57,15 +58,15 @@ $email->send(
 // Porém todas as configurações anteriores podem ser feitas dentro do loop
 
 // foreach ($destinos as $add) {
-//     $titulo     = "Aviso para $add";
-//     $body       = "Olá, $add, este é um email individual.";
+//     $titulo  = "Aviso para $add";
+//     $corpo   = "Olá, $add, este é um email individual.";
 
 //     $email->send(
-//         $add,
+//         $destinos,
 //         $titulo,
-//         $body,
-//         $conteudoAlternativo,
-//         $alvosVisiveis,
+//         $corpo,
+//         $corpoAlt,
+//         $esconderAlvos,
 //         $anexos,
 //         $emSucesso,
 //         $emFalha
@@ -73,14 +74,16 @@ $email->send(
 // }
 
 
-function coletarEmailsDoJson($jsonPath) {
+function coletarEmailsJson($jsonPath) {
     $emails         = [];
-    $cadastrosJson  = file_get_contents($jsonPath);
-    $cadastros      = json_decode($cadastrosJson);
+    $cadastrosJson  = @file_get_contents($jsonPath);
+    $cadastros      = @json_decode($cadastrosJson);
 
-    foreach ($cadastros as $cadastro) {
-        array_push($emails, $cadastro->email);
-    };
+    if ($cadastros) {
+        foreach ($cadastros as $cadastro) {
+            array_push($emails, $cadastro->email);
+        };
+    }
 
     return $emails;
 }
