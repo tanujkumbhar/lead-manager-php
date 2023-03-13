@@ -12,10 +12,10 @@
 <body class="container">
     <div class="row">
         <form class="form-control shadow-sm w-auto mx-auto my-4 p-4" action="./register.php" method="post">
-            <h2 class="fs-3 mb-4 text-center">Registrar um novo cadastro</h2>
+            <h2 class="fs-3 mb-4 text-center">Register a new account</h2>
 
             <div class="input-group mb-2">
-                <span class="input-group-text">Nome</span>
+                <span class="input-group-text">Name</span>
                 <input name="newName" type="text" class="form-control" placeholder="Rogério" aria-label="Name" required>
             </div>
 
@@ -30,7 +30,7 @@
     <hr>
     <div class="row">
         <div class="my-4 w-auto mx-auto card shadow-sm p-0" style="min-width: min(280px, 90vw);">
-            <h2 class="fs-3 text-center card-header">Cadastros</h2>
+            <h2 class="fs-3 text-center card-header">Registrations</h2>
             <ul class="list-group list-group-flush">
                 <?php
 
@@ -44,17 +44,17 @@
 
                 ?>
             </ul>
-            <a href="./emails/emails.csv" class="btn btn-outline-success mx-3 mt-4" download="">Baixar CSV</a>
-            <a href="./emails/emails.json" class="btn btn-outline-success mx-3 mt-2 mb-4" download="">Baixar JSON</a>
+            <a href="./emails/emails.csv" class="btn btn-outline-success mx-3 mt-4" download="">Download CSV</a>
+            <a href="./emails/emails.json" class="btn btn-outline-success mx-3 mt-2 mb-4" download="">Download JSON</a>
         </div>
     </div>
     <hr>
     <div class="row">
         <form class="form-control w-auto mx-auto my-4 p-4 card shadow-sm" action="./send-email.php" method="post" enctype="multipart/form-data" target="_blank">
-            <h2 class="fs-2 mb-5">Enviar email</h2>
+            <h2 class="fs-2 mb-5">Send email</h2>
 
             <div class="mb-5">
-                <label for="title" class="form-label fs-4">Destinatários</label>
+                <label for="title" class="form-label fs-4">Recipients</label>
                 <ul class="list-group" title="Coletando emails no arquivo emails.json">
                     <?php
     
